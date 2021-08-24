@@ -15,18 +15,18 @@ public class Sql2oDepartmentsDao implements departmentsDao{
     @Override
     public void add(Departments department) {
         String sql = "INSERT INTO departments (name,description,totalemployees) VALUES (:name,:description,:totalemployees)";
-        try(Connection con = sql2o.open()){ //try to open a connection
-            int id = (int) con.createQuery(sql, true) //make a new variable
-                    .bind(department) //map my argument onto the query so we can use information from it
-                    .executeUpdate() //run it all
-                    .getKey(); //int id is now the row number (row “key”) of db
-            department.setId(id); //update object to set id now from database
+        try (Connection con = sql2o.open()) {
+            int id = (int) con.createQuery(sql, true)
+                    .addParameter("name", department.getName())
+                    .addParameter("description", department.getDescription())
+                    .addParameter("totalemployees", department.getTotalEmployees())
+                    .executeUpdate()
+                    .getKey();
+            department.setId(id);
         } catch (Sql2oException ex) {
             System.out.println(ex);
         }
     }
-
-
 
 
     @Override

@@ -1,6 +1,5 @@
 package dao;
 
-import models.Departments;
 import models.News;
 import org.sql2o.Connection;
 import org.sql2o.Sql2o;
@@ -13,11 +12,12 @@ public class Sql2oNewsDao implements newsDao {
     public Sql2oNewsDao(Sql2o sql2o){ this.sql2o = sql2o; }
 
     @Override
-    public  void add (News news){
-        String sql = "INSERT INTO news (description) VALUES (:description)";
-        try(Connection con = sql2o.open()){
+    public void add(News news) {
+        String sql = "INSERT INTO news (description,departmentid) VALUES (:description,:departmentid);";
+        try (Connection con = sql2o.open()) {
             int id = (int) con.createQuery(sql, true)
-                    .bind(news)
+                    .addParameter("description", news.getDescription())
+                    .addParameter("departmentid", news.getDepartmentid())
                     .executeUpdate()
                     .getKey();
             news.setId(id);
@@ -25,7 +25,6 @@ public class Sql2oNewsDao implements newsDao {
             System.out.println(ex);
         }
     }
-
 
     @Override
     public List<News> getAll() {
@@ -63,6 +62,14 @@ public class Sql2oNewsDao implements newsDao {
             return con.createQuery("SELECT * FROM news WHERE id = :id")
                     .addParameter("id", id)
                     .executeAndFetchFirst(News.class);
+        }
+    }
+    @Override
+    public List<News> getAllNewsByDepartmentID(String departmentid) {
+        try (Connection con = sql2o.open()) {
+            return con.createQuery("SELECT * FROM news WHERE departmentid = :departmentid")
+                    .addParameter("departmentid", departmentid)
+                    .executeAndFetch(News.class);
         }
     }
 }

@@ -9,8 +9,10 @@ CREATE TABLE departments(
 
 CREATE TABLE news(
     id SERIAL PRIMARY KEY,
-    description VARCHAR
+    description VARCHAR,
+    departmentid VARCHAR
 );
+
 CREATE TABLE users(id SERIAL PRIMARY KEY,
     name VARCHAR,
     department VARCHAR,

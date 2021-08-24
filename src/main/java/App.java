@@ -37,14 +37,12 @@ public class App {
 
 
         String connectionString = "jdbc:postgresql://localhost:5432/organization_portal"; //connect to Organization_Portal, not Organization_Portal_test!
-        // Ubuntu
         Sql2o sql2o = new Sql2o(connectionString, "damark", "password");
 
-        //postgresURI://sqydllxicuqtyd:12e35456ddab16fbd3db2fd56e898ba3913d1b9b727f12fbbab04ce2353e4909@ec2-44-196-132-15.compute-1.amazonaws.com:5432/dduuvp98keh0rv
+        //postgres://qmgvctoxaejxgt:d4a72222987588c95f8f6ecc59fec20e2e1b18ba9231bdadabcebd272404ccf1@ec2-35-153-114-74.compute-1.amazonaws.com:5432/de189lcl3pv76p
 
-
-        //String connectionString = "jdbc:postgresql://ec2-44-196-132-15.compute-1.amazonaws.com:5432/dduuvp98keh0rv"; //!
-        //Sql2o sql2o = new Sql2o(connectionString, "sqydllxicuqtyd", "12e35456ddab16fbd3db2fd56e898ba3913d1b9b727f12fbbab04ce2353e4909"); //!
+        //String connectionString = "jdbc:postgresql://ec2-35-153-114-74.compute-1.amazonaws.com:5432/de189lcl3pv76p"; //connect to Organization_Portal, not Organization_Portal_test!
+        //Sql2o sql2o = new Sql2o(connectionString, "qmgvctoxaejxgt", "d4a72222987588c95f8f6ecc59fec20e2e1b18ba9231bdadabcebd272404ccf1");
 
 
         departmentsDao = new Sql2oDepartmentsDao(sql2o);
@@ -92,7 +90,7 @@ public class App {
             if (departmentToFind == null){
                 throw new ApiException(404, String.format("No Departments with the id: \"%s\" exists", req.params("id")));
             }
-            allUsers = usersDao.getAllUsersByDepartment(departmentid);
+            allUsers = usersDao.getAllUsersByDepartmentID(departmentid);
             return gson.toJson(allUsers);
         });
 
@@ -126,6 +124,19 @@ public class App {
             }
             return gson.toJson(newsToFind);
         });
+        get("/departments/:id/news", "application/json", (req, res) -> {
+            String departmentid = req.params("id");
+            int departmentidINT = Integer.parseInt(departmentid);
+            Departments departmentToFind = departmentsDao.findById(departmentidINT);
+
+            List<News> allNews;
+
+            if (departmentToFind == null){
+                throw new ApiException(404, String.format("No Departments with the id: \"%s\" exists", req.params("id")));
+            }
+            allNews = newsDao.getAllNewsByDepartmentID(departmentid);
+            return gson.toJson(allNews);
+        });
 
         //CREATE DEPARTMENT
         post("/departments/new", "application/json", (req, res) -> {
@@ -156,15 +167,14 @@ public class App {
             return gson.toJson(departmentToFind);
         });
 
-        //FILTERS
-        exception(ApiException.class, (exception, req, res) -> {
-            ApiException err = exception;
+        exception(ApiException.class, (exc, req, res) -> {
+            ApiException err = (ApiException) exc;
             Map<String, Object> jsonMap = new HashMap<>();
             jsonMap.put("status", err.getStatusCode());
             jsonMap.put("errorMessage", err.getMessage());
-            res.type("application/json");
-            res.status(err.getStatusCode());
-            res.body(gson.toJson(jsonMap));
+            res.type("application/json"); //after does not run in case of an exception.
+            res.status(err.getStatusCode()); //set the status
+            res.body(gson.toJson(jsonMap));  //set the output.
         });
 
 

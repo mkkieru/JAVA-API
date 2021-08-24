@@ -18,7 +18,11 @@ public class Sql2oUsersDao implements usersDao {
 
         try(Connection con = sql2o.open()){
             int id = (int) con.createQuery(sql, true)
-                    .bind(users)
+                    .addParameter("name", users.getName())
+                    .addParameter("department", users.getDepartment())
+                    .addParameter("departmentid", users.getDepartmentid())
+                    .addParameter("companyposition", users.getCompanyPosition())
+                    .addParameter("roleplayed", users.getRole())
                     .executeUpdate()
                     .getKey();
             users.setId(id);
@@ -36,10 +40,10 @@ public class Sql2oUsersDao implements usersDao {
         }
     }
     @Override
-    public List<Users> getAllUsersByDepartment(String departmentid) {
+    public List<Users> getAllUsersByDepartmentID(String departmentid) {
         try (Connection con = sql2o.open()) {
             return con.createQuery("SELECT * FROM users WHERE departmentid = :departmentid")
-                    .addParameter("departmentID", departmentid)
+                    .addParameter("departmentid", departmentid)
                     .executeAndFetch(Users.class);
         }
     }
