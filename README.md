@@ -3,7 +3,8 @@
 
 ###Description
 
-This is a java based application that allows park rangers to keep a well organized record of the animals in their park. It also keeps track of details such as the animals age, health, location animal was spotted and given name.
+This is an API that allows users to key in organizations departments, users in that department and news relating to that department.
+It also allows fetching of the inputted data.
 
 ###Technologies Used
 
