@@ -19,7 +19,8 @@ To vies the Full working API, click on the following link: [https://organization
 
 ###Known Bugs
 
-There are no known bugs currently. The page works as expected. Support and Contact Details For any comments,suggestions,feedback or inquiries, contact me via email:[mkkieru55@gmail.com]
+There are no known bugs currently. The page works as expected. 
+Support and Contact Details For any comments,suggestions,feedback or inquiries, contact me via email:[mkkieru55@gmail.com]
 
 ###Database Tables
 
